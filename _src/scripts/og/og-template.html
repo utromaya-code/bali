@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Display:wght@400&family=Manrope:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; }
+  body {
+    width: 1200px; height: 630px; position: relative; overflow: hidden;
+    font-family: 'Manrope', sans-serif; color: #1f2638; background: #f6f2ea;
+    display: grid; grid-template-columns: 1fr 440px;
+  }
+  .in { padding: 56px 56px 52px 64px; display: flex; flex-direction: column; }
+  .strip { display: flex; justify-content: space-between; font-size: 13px; font-weight: 600;
+    letter-spacing: .2em; text-transform: uppercase; border-top: 3px double #1f2638;
+    border-bottom: 1px solid #1f2638; padding: 12px 0; }
+  h1 { font-family: 'Noto Serif Display', serif; font-weight: 400; font-size: 100px;
+    line-height: .92; letter-spacing: -.035em; margin-top: 36px; }
+  h1 span { display: block; }
+  .tag { font-family: 'Noto Serif Display', serif; font-weight: 400;
+    font-size: 34px; color: #6c5320; margin-top: auto; }
+  .dates { font-size: 17px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; margin-top: 10px; }
+  .photo { position: relative; }
+  img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 45% 40%; }
+</style>
+</head>
+<body>
+  <div class="in">
+    <p class="strip"><span>Выпуск № 01</span><span>Бали · Гили Мено</span></p>
+    <h1><span>Соль. Рис.</span><span>Тишина.</span></h1>
+    <p class="tag">Между движением и звуком</p>
+    <p class="dates">12–22 февраля 2027 · 11 дней</p>
+  </div>
+  <div class="photo"><img src="../../../images/cover.jpg" alt=""></div>
+</body>
+</html>
