@@ -598,6 +598,22 @@ body, .lead, .cover__sub, .cover__fact dd, .intro__lead, .chapter__text, .muted,
 .lab__text .h2 { font-size: clamp(34px, 3.4vw, 52px); overflow-wrap: break-word; hyphens: auto; }
 #practices .h2 { max-width: 20ch; }
 
+/* ---------- Цены ---------- */
+
+.tiers { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(12px, 2vw, 24px); max-width: 860px; }
+.tier { background: var(--paper); border: 1px solid var(--line); padding: clamp(24px, 3vw, 40px); }
+.tier--first { background: var(--night); color: var(--on-night); border-color: var(--night); }
+.tier__note { font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold-ink); margin-bottom: 14px; }
+.tier--first .tier__note { color: var(--gold); }
+.tier__price { font-family: var(--sans); font-weight: 700; font-size: clamp(44px, 5vw, 72px); line-height: 1; letter-spacing: -0.035em; margin-bottom: 12px; }
+.tier__label { font-weight: 600; font-size: clamp(16px, 1.2vw, 18px); }
+.tiers__extra { margin: 18px 0 clamp(48px, 6vw, 80px); font-weight: 600; }
+.pack__title { font-family: var(--sans); font-weight: 700; font-size: clamp(26px, 2.4vw, 36px); letter-spacing: -0.02em; margin: 0 0 18px; }
+.req__who { font-weight: 600; color: var(--on-night); }
+.req__contacts--backup { font-size: 15px; margin-top: 10px; }
+.footer__links span { color: var(--on-night); font-weight: 600; }
+@media (max-width: 560px) { .tiers { grid-template-columns: 1fr; } }
+
 /* ---------- Один шрифт на весь сайт ----------
    Заголовки и текст — Manrope. Иерархия только размером и жирностью:
    заголовки 700 с плотной разрядкой, текст 400, метки 600 заглавными. */

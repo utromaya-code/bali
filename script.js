@@ -16,29 +16,8 @@ function reducedMotion() {
    Ссылки в мессенджеры с заготовленным текстом
    --------------------------------------------------------------------- */
 function initContactLinks() {
-  var text = encodeURIComponent(CFG.prefilledMessage || '');
-
-  if (CFG.telegramUrl) {
-    document.querySelectorAll('[data-cta="telegram"]').forEach(function (el) {
-      el.setAttribute('href', CFG.telegramUrl + (text ? '?text=' + text : ''));
-      el.setAttribute('rel', 'noopener');
-    });
-  }
-
-  document.querySelectorAll('[data-cta="whatsapp"]').forEach(function (el) {
-    if (!CFG.whatsappNumber) {
-      // Контакта нет — убираем ссылку вместе с разделителем перед ней.
-      var separator = el.previousSibling;
-      if (separator && separator.nodeType === 3) separator.remove();
-      el.remove();
-      return;
-    }
-    el.setAttribute(
-      'href',
-      'https://wa.me/' + CFG.whatsappNumber + (text ? '?text=' + text : '')
-    );
-    el.setAttribute('rel', 'noopener');
-  });
+  // Ссылки на Telegram и WhatsApp с готовым текстом собираются при сборке
+  // страницы (build_bali.py) и работают без JavaScript.
 }
 
 /* ---------------------------------------------------------------------
@@ -221,12 +200,12 @@ function initAnalytics() {
     });
   });
 
-  document.querySelectorAll('[data-cta="telegram"]').forEach(function (el) {
+  document.querySelectorAll('[data-cta^="telegram"]').forEach(function (el) {
     el.addEventListener('click', function () {
       reach('telegram_click');
     });
   });
-  document.querySelectorAll('[data-cta="whatsapp"]').forEach(function (el) {
+  document.querySelectorAll('[data-cta^="whatsapp"]').forEach(function (el) {
     el.addEventListener('click', function () {
       reach('whatsapp_click');
     });

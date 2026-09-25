@@ -39,6 +39,28 @@ def picture(img, sizes="100vw", cls="", eager=False, load=None):
     )
 
 
+def contact_links(cfg, who=None, sep=" · "):
+    """Ссылки Telegram и WhatsApp с готовым текстом. who=None — основной контакт, иначе запасной."""
+    from urllib.parse import quote
+    src = cfg if who is None else cfg["backup"]
+    kind = "" if who is None else "-backup"
+    text = quote(cfg.get("prefilledMessage", ""))
+    out = [f'<a href="{e(src["telegramUrl"])}?text={text}" data-cta="telegram{kind}" rel="noopener" target="_blank">Telegram</a>']
+    if src.get("whatsappNumber"):
+        out.append(f'<a href="https://wa.me/{e(src["whatsappNumber"])}?text={text}" data-cta="whatsapp{kind}" rel="noopener" target="_blank">WhatsApp</a>')
+    return sep.join(out)
+
+
+def contacts_block(cfg):
+    b = cfg.get("backup")
+    main = f'<span class="req__who">{e(cfg.get("contactName", ""))}</span> {contact_links(cfg)}'
+    if not b:
+        return f'<p class="req__contacts">Или напишите напрямую: {main}</p>'
+    return (f'<p class="req__contacts">Или напишите напрямую: {main}</p>'
+            f'<p class="req__contacts req__contacts--backup">Если {e(cfg.get("contactName", ""))} не ответит в течение дня — '
+            f'{e(b["name"])}: {contact_links(cfg, "backup")}</p>')
+
+
 def label(text, cls=""):
     return f'<p class="label{(" " + cls) if cls else ""}">{e(text)}</p>' if text else ""
 
@@ -93,7 +115,7 @@ def head(c):
 def header(c):
     cfg = c["config"]
     links = [("Маршрут", "#route"), ("Практики", "#practices"), ("Ведущие", "#team"),
-             ("Где живём", "#stay"), ("Программа", "#program"), ("Вопросы", "#faq")]
+             ("Где живём", "#stay"), ("Программа", "#program"), ("Цены", "#price"), ("Вопросы", "#faq")]
     items = "".join(f'<li><a href="{h}">{e(t)}</a></li>' for t, h in links)
     return f"""
 <header class="header" id="site-header">
@@ -343,7 +365,7 @@ def people(c):
       <p class="org__years"><span>{e(org['years'])}</span>{e(org['yearsText'])}</p>
       <p class="org__places">{" · ".join(e(x) for x in org['places'])}</p>
       <p class="org__lead">{e(org['text'])}</p>
-      <a class="btn btn--line" href="{e(c['config']['telegramUrl'])}" data-cta="telegram">Написать Андрею</a>
+      <a class="btn btn--line" href="{e((c['config'].get('backup') or c['config'])['telegramUrl'])}" data-cta="telegram-backup" rel="noopener" target="_blank">Написать Андрею</a>
     </div>
   </div>
 </section>
@@ -463,12 +485,22 @@ def price(c):
     p, cfg = c["price"], c["config"]
     inc = "".join(f"<li>{e(x)}</li>" for x in p["included"])
     exc = "".join(f"<li>{e(x)}</li>" for x in p["excluded"])
+    tiers = ""
+    if p.get("tiers"):
+        cards = "".join(
+            f'<div class="tier{" tier--first" if i == 0 else ""}"><p class="tier__note">{e(x["note"])}</p>'
+            f'<p class="tier__price">{e(x["price"])}</p><p class="tier__label">{e(x["label"])}</p></div>'
+            for i, x in enumerate(p["tiers"]))
+        extra = f'<p class="tiers__extra">{e(p["extra"])}</p>' if p.get("extra") else ""
+        tiers = f'<div class="tiers">{cards}</div>{extra}'
     return f"""
 <section class="section section--cream" id="price">
   <div class="wrap">
-    {label("Стоимость")}
+    {label("Цены 2027")}
     <h2 class="h2">{e(p['title'])}</h2>
     <p class="lead">{e(p['lead'])}</p>
+    {tiers}
+    <h3 class="pack__title">Что входит</h3>
     <div class="pack">
       <div><h3 class="pack__h">Входит</h3><ul class="pack__list pack__list--in">{inc}</ul></div>
       <div><h3 class="pack__h">Не входит</h3><ul class="pack__list pack__list--out">{exc}</ul></div>
@@ -510,9 +542,7 @@ def request(c):
         f'<label class="radio"><input type="radio" name="channel" value="{e(x)}"{" checked" if i == 0 else ""}><span>{e(x)}</span></label>'
         for i, x in enumerate(fl["channelOptions"]))
     roomings = "".join(f'<option value="{e(x)}">{e(x)}</option>' for x in fl["roomingOptions"])
-    contacts = f'<a href="{e(cfg["telegramUrl"])}" data-cta="telegram">Telegram</a>'
-    if cfg.get("whatsappNumber"):
-        contacts += ' · <a href="#" data-cta="whatsapp">WhatsApp</a>'
+    contacts = contact_links(cfg)
     privacy = "Согласен на обработку персональных данных"
     if cfg.get("privacyUrl"):
         privacy = f'Согласен на <a href="{e(cfg["privacyUrl"])}">обработку персональных данных</a>'
@@ -523,7 +553,7 @@ def request(c):
       {label("Заявка")}
       <h2 class="h2">{e(f['title'])}</h2>
       <p class="lead lead--night">{e(f['lead'])}</p>
-      <p class="req__contacts">Или напишите напрямую: {contacts}</p>
+      {contacts_block(cfg)}
     </div>
     <div class="card">
       <form class="form" id="request-form" novalidate>
@@ -560,6 +590,7 @@ def request(c):
       </div>
       <div class="result result--error" id="form-error" role="alert" hidden>
         <h3 class="h3">{e(f['error']['title'])}</h3><p>{e(f['error']['text'])}</p><p>{contacts}</p>
+        {f'<p>Или {e(cfg["backup"]["name"])}: {contact_links(cfg, "backup")}</p>' if cfg.get("backup") else ""}
       </div>
     </div>
   </div>
@@ -570,9 +601,9 @@ def request(c):
 
 def footer(c):
     cfg, f = c["config"], c["footer"]
-    links = f'<a href="{e(cfg["telegramUrl"])}" data-cta="telegram">Telegram</a>'
-    if cfg.get("whatsappNumber"):
-        links += ' <a href="#" data-cta="whatsapp">WhatsApp</a>'
+    links = f'<span>{e(cfg.get("contactName", ""))}:</span> ' + contact_links(cfg, sep=" ")
+    if cfg.get("backup"):
+        links += f' <span>{e(cfg["backup"]["name"])}:</span> ' + contact_links(cfg, "backup", sep=" ")
     if cfg.get("privacyUrl"):
         links += f' <a href="{e(cfg["privacyUrl"])}">Политика конфиденциальности</a>'
     credits = "".join(
