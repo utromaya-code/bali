@@ -100,8 +100,8 @@ def head(c):
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Display:wght@400&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="preload" as="image" href="images/cover.webp" media="(min-width: 701px)">
-<link rel="preload" as="image" href="images/cover-m.webp" media="(max-width: 700px)">
+<link rel="preload" as="image" href="{e(c['hero']['image']['src'])}.webp" media="(min-width: 701px)">
+<link rel="preload" as="image" href="{e(c['hero']['image'].get('srcMobile') or c['hero']['image']['src'] + '-m')}.webp" media="(max-width: 700px)">
 <link rel="stylesheet" href="styles.css">
 <script>document.documentElement.classList.add('js');</script>
 <script type="application/ld+json">{json.dumps(trip_ld, ensure_ascii=False)}</script>
@@ -162,6 +162,10 @@ def hero(c):
   <div class="wrap">
     <div class="cover__strip"><span>{e(h['issue'])}</span><span>{e(h['place'])}</span></div>
     <h1 class="cover__title">{title}</h1>
+    <div class="cover__quick">
+      <p class="cover__brief">{e(h.get('brief', ''))}</p>
+      <a class="btn btn--primary" href="#request" data-goal="cta_hero_mobile">{e(cfg['ctaPrimary'])}</a>
+    </div>
     <div class="cover__grid">
       <div class="cover__text">
         <p class="cover__tagline">{e(h['tagline'])}</p>
@@ -565,18 +569,8 @@ def request(c):
             <input class="field__input" type="text" id="f-contact" name="contact" autocomplete="tel" required>
             <span class="field__error" data-error-for="contact" hidden></span></label>
         </div>
-        <div class="form__row">
-          <label class="field"><span class="field__label">{e(fl['email'])}</span>
-            <input class="field__input" type="email" id="f-email" name="email" autocomplete="email" aria-describedby="email-hint">
-            <span class="field__hint" id="email-hint">{e(fl['emailHint'])}</span>
-            <span class="field__error" data-error-for="email" hidden></span></label>
-          <label class="field"><span class="field__label">{e(fl['people'])}</span>
-            <input class="field__input" type="number" id="f-people" name="people" min="1" max="10" value="1" inputmode="numeric"></label>
-        </div>
         <fieldset class="field field--group"><legend class="field__label">{e(fl['channel'])}</legend>
           <div class="radios">{channels}</div></fieldset>
-        <label class="field"><span class="field__label">{e(fl['rooming'])}</span>
-          <select class="field__input" id="f-rooming" name="rooming">{roomings}</select></label>
         <label class="field"><span class="field__label">{e(fl['comment'])}</span>
           <textarea class="field__input" id="f-comment" name="comment" rows="3" aria-describedby="comment-hint"></textarea>
           <span class="field__hint" id="comment-hint">{e(fl['commentHint'])}</span></label>

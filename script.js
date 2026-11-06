@@ -291,7 +291,7 @@ function validate(form) {
   if (!form.elements.name.value.trim()) problems.push('name');
   if (!form.elements.contact.value.trim()) problems.push('contact');
 
-  var email = form.elements.email.value.trim();
+  var email = form.elements.email ? form.elements.email.value.trim() : '';
   if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) problems.push('email');
 
   if (!form.elements.consent.checked) problems.push('consent');
@@ -310,8 +310,8 @@ function collect(form) {
     contact: (data.get('contact') || '').trim(),
     email: (data.get('email') || '').trim(),
     channel: data.get('channel') || '',
-    people: data.get('people') || '1',
-    rooming: data.get('rooming') || '',
+    people: data.get('people') || 'уточним в переписке',
+    rooming: data.get('rooming') || 'уточним в переписке',
     comment: (data.get('comment') || '').trim(),
     page: 'Соль. Рис. Тишина. — Бали, 12–22 февраля 2027',
     source: window.location.href,

@@ -206,7 +206,13 @@ a { color: inherit; }
 .stamp__c small { display: block; font: 600 9px var(--sans); letter-spacing: 0.22em; text-transform: uppercase; margin-top: 6px; }
 @keyframes stamp { to { transform: rotate(360deg); } }
 
+/* Короткая строка с местом, датами и ценой и кнопка под заголовком: только на телефоне */
+.cover__quick { display: none; }
+.cover__brief { font-weight: 600; font-size: 17px; line-height: 1.45; margin: 0; }
+
 @media (max-width: 860px) {
+  .cover__quick { display: grid; gap: 16px; justify-items: start; margin: 4px 0 28px; }
+  .cover__actions .btn--primary { display: none; }
   .cover__grid { grid-template-columns: 1fr; }
   .cover__photo { order: -1; }
   .stamp { left: auto; right: 14px; bottom: 14px; width: 112px; }
@@ -514,7 +520,7 @@ html:not(.js) .prog__toggle { display: none; }
 
 .req { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(32px, 6vw, 96px); align-items: start; }
 .req__contacts { color: var(--on-night-muted); }
-.req__contacts a { color: var(--gold); }
+.req__contacts a { color: var(--gold); display: inline-block; padding-block: 12px; margin-block: -12px; }
 .card { background: var(--paper); color: var(--ink); padding: clamp(24px, 3.5vw, 52px); }
 .form { display: flex; flex-direction: column; gap: 22px; }
 .form__row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
